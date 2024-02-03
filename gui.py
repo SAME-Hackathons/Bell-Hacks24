@@ -23,9 +23,35 @@ clicked.set( "Social Media" )
 mediaTypes= [
     "Instagram", 
     "Discord", 
-    "YouTube"
+    "Youtube"
 ]
-drop = tk.OptionMenu( window , clicked, *mediaTypes ) 
+
+cleanOptions = []
+prompt = tk.Label(window, text="What would you like to cleanse?", font=ctk.CTkFont(size=12), underline = True)
+listbox = tk.Listbox(window, font=ctk.CTkFont(size=10), height = len(cleanOptions), selectmode = "multiple")
+
+def showOptions():
+    listbox.delete(0,END)
+    type = clicked.get()
+    cleanOptions = []
+    if type == "Instagram": 
+        cleanOptions = ["Instagram Comments", "Instagram Messages"]
+    elif type == "Youtube":
+        cleanOptions = ["Youtube Comments"]
+    elif type == "Discord":
+        cleanOptions = ["Discord Messages"]
+
+    prompt.pack()
+    for count, option in enumerate(cleanOptions, 1):
+        listbox.insert(count, option)
+    listbox.pack()
+
+def grabcurrent(event):
+    cleanOptions = []
+    showOptions()
+    pass
+
+drop = tk.OptionMenu( window , clicked, *mediaTypes, command = grabcurrent ) 
 drop.pack(pady=10) 
 
 
@@ -39,31 +65,6 @@ password_label = tk.Label(window, text="Password:", font=ctk.CTkFont(size=12), f
 password_label.pack()
 password_entry = tk.Entry(window, show="*")
 password_entry.pack()
-
-
-
-
-
-
-
-
-
-def showOptions():
-    type = clicked.get()
-    cleanOptions = []
-    if type == "Instagram": 
-        cleanOptions = ["Comments", "Messages"]
-    elif type == "Youtube":
-        cleanOptions = ["Comments"]
-    elif type == "Discord":
-        cleanOptions = ["Messages"]
-
-    prompt = tk.Label(window, text="What would you like to cleanse?", font=ctk.CTkFont(size=12), underline = True)
-    prompt.pack()
-    listbox = tk.Listbox(window, font=ctk.CTkFont(size=10), height = 2, selectmode = "multiple")
-    for count, option in enumerate(cleanOptions, 1):
-        listbox.insert(count, option)
-    listbox.pack()
 
 def submit_credentials():
     text = clicked.get()
@@ -89,7 +90,36 @@ def submit_credentials():
 
     username_entry.delete(0, tk.END)
     password_entry.delete(0, tk.END)
-    showOptions()
+
+    selectedVals = []
+    for i in listbox.curselection():
+        selectedVals.append(listbox.get(i))
+
+    with open("selectedOptionsNew.op", "r") as file:
+        lines = file.readlines()
+
+    if text == "Instagram":
+        lines[2] = f"False\n"
+        lines[4] = f"False\n"
+    if text == "Youtube":
+        lines[8] = f"False\n"
+    if text == "Discord":
+        lines[12] = f"False\n"
+
+    for i in selectedVals:
+        if i == "Instagram Comments":
+            lines[2] = f"True\n"
+        elif i == "Instagram Messages":
+            lines[4] = f"True\n"
+        elif i == "Youtube Comments":
+            lines[8] = f"True\n"
+        elif i == "Discord Messages":
+            lines[12] = f"True\n"
+            
+        
+    with open("selectedOptionsNew.op", "w") as file:
+        file.writelines(lines)
+    #showOptions()
 
 submit_button = ctk.CTkButton(window, text="Submit", font=ctk.CTkFont(size=12), command=submit_credentials)
 submit_button.pack(pady=20)
