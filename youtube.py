@@ -16,6 +16,7 @@ from sklearn.pipeline import Pipeline
 import pandas as pd
 import joblib
 from class_data import *
+from hateful import is_hateful
 
 # OAuth2 credentials file (replace 'path/to/credentials.json' with your actual path)
 credentials_path = 'credentials.json'
@@ -49,14 +50,6 @@ creds = authenticate()
 
 # Build the YouTube API service using OAuth2 credentials
 youtube_service = build('youtube', 'v3', credentials=creds)
-model = joblib.load("model/better.joblib")
-
-def is_hatefull(comment):
-     df = pd.DataFrame([comment], columns=['text'])
-     if(model.predict(df) == 1):
-          return True
-     else:
-          return False
 
 def filter_comment(video_id):
     # Search for comments on the video with the specified text
@@ -73,7 +66,7 @@ def filter_comment(video_id):
         #print("went through comments")
         comment = comment_thread['snippet']['topLevelComment']['snippet']['textDisplay']
         #print(comment)
-        if is_hatefull(comment):
+        if is_hateful(comment):
             comment_id = comment_thread['id']
             delete_comment(comment_id)
             print("Deleted Comment: " + comment)
