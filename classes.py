@@ -1,65 +1,71 @@
 class RemovePunctuationTransformer(BaseEstimator, TransformerMixin):
-    def init(self, textcolumn):
+    def __init__(self, text_column):
         self.text_column = text_column
 
     def fit(self, X, y=None):
         return self
 
     def transform(self, X, y=None):
-        X = X.copy()
-        X[self.text_column] = X[self.textcolumn].apply(lambda x: remove_punctuation(x))
-        return X
+        X_ = X.copy()
+        X_[self.text_column] = X_[self.text_column].apply(lambda x: remove_punctuation(x))
+        return X_
+    
 class TokenizerTransformer(BaseEstimator, TransformerMixin):
-    def init(self, textcolumn):
+    def __init__(self, text_column):
         self.text_column = text_column
 
     def fit(self, X, y=None):
         return self
 
     def transform(self, X, y=None):
-        X = X.copy()
-        X[self.text_column] = X[self.textcolumn].apply(lambda x: tokenizer(x))
-        return X
+        X_ = X.copy()
+        X_[self.text_column] = X_[self.text_column].apply(lambda x: tokenizer(x))
+        return X_
+    
 class RemoveStopwordsTransformer(BaseEstimator, TransformerMixin):
-    def init(self, textcolumn):
+    def __init__(self, text_column):
         self.text_column = text_column
 
     def fit(self, X, y=None):
         return self
 
     def transform(self, X, y=None):
-        X = X.copy()
-        X[self.text_column] = X[self.textcolumn].apply(lambda x: remove_stopwords(x))
-        return X
+        X_ = X.copy()
+        X_[self.text_column] = X_[self.text_column].apply(lambda x: remove_stopwords(x))
+        return X_
+    
 class RemoveShortTokensTransformer(BaseEstimator, TransformerMixin):
-    def init(self, textcolumn):
+    def __init__(self, text_column):
         self.text_column = text_column
 
     def fit(self, X, y=None):
         return self
 
     def transform(self, X, y=None):
-        X = X.copy()
-        X[self.text_column] = X[self.textcolumn].apply(lambda x: remove_shorttokens(x))
-        return X
+        X_ = X.copy()
+        X_[self.text_column] = X_[self.text_column].apply(lambda x: remove_shorttokens(x))
+        return X_
+
 class StemmingTransformer(BaseEstimator, TransformerMixin):
-    def init(self, textcolumn):
+    def __init__(self, text_column):
         self.text_column = text_column
     def fit(self, X, y=None):
         return self
     def transform(self, X, y=None):
-        X = X.copy()
-        X[self.text_column] = X[self.textcolumn].apply(lambda x: stemming(x))
-        return X
+        X_ = X.copy()
+        X_[self.text_column] = X_[self.text_column].apply(lambda x: stemming(x))
+        return X_
+
 class  ReturnStringTransformer(BaseEstimator, TransformerMixin):
-    def init(self, textcolumn):
+    def __init__(self, text_column):
         self.text_column = text_column
 
     def fit(self, X, y=None):
         return self
 
     def transform(self, X, y=None):
-        X = X.copy()
-        X[self.text_column] = X[self.textcolumn].apply(lambda x: " ".join(x))
-        X = pd.Series(X[self.text_column])
-        return X
+        X_ = X.copy()
+        X_[self.text_column] = X_[self.text_column].apply(lambda x: " ".join(x))
+        X_ = pd.Series(X_[self.text_column])
+        return X_
+    
