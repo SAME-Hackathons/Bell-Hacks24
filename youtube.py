@@ -1,23 +1,43 @@
 import os
-import google.auth
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-# Set your API key or OAuth credentials
-# For API key:
-api_key = "YOUR_API_KEY"
+# OAuth2 credentials file (replace 'path/to/credentials.json' with your actual path)
+credentials_path = 'credentials.json'
 
-# For OAuth credentials (replace 'path/to/credentials.json' and 'path/to/token.json' with your actual paths)
-# credentials_path = 'path/to/credentials.json'
-# token_path = 'path/to/token.json'
-# credentials, _ = google.auth.transport.requests.Request().from_client_secrets_file(credentials_path)
-# credentials.refresh(google.auth.transport.requests.Request())
-# token = credentials.token
-# credentials = google.auth.credentials.Credentials.from_authorized_user_file(token_path)
+# Scope required for YouTube Data API
+SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
 
-# Build the YouTube API service
-youtube_service = build('youtube', 'v3', developerKey=api_key)
+def authenticate():
+    credentials = None
 
-def find_comment(video_id, comment_text):
+    # The file token.json stores the user's access and refresh tokens, and is created automatically when the
+    # authorization flow completes for the first time.
+    if os.path.exists('token.json'):
+        credentials = Credentials.from_authorized_user_file('token.json')
+
+    # If there are no (valid) credentials available, let the user log in.
+    if not credentials or not credentials.valid:
+        if credentials and credentials.expired and credentials.refresh_token:
+            credentials.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
+            credentials = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(credentials.to_json())
+
+    return credentials
+
+# Get OAuth2 credentials
+creds = authenticate()
+
+# Build the YouTube API service using OAuth2 credentials
+youtube_service = build('youtube', 'v3', credentials=creds)
+
+def filter_comment(video_id):
     # Search for comments on the video with the specified text
     comments_request = youtube_service.commentThreads().list(
         part='id,snippet',
@@ -30,7 +50,12 @@ def find_comment(video_id, comment_text):
     for comment_thread in comments_response['items']:
         comment = comment_thread['snippet']['topLevelComment']['snippet']['textDisplay']
         if comment_text in comment:
-            return comment_thread['id']
+            comment_id = comment_thread['id']
+            delete_comment(comment_id)
+            print("Deleted Comment: " + comment_text)
+        else:
+            print("Comment not found.")
+
 
     return None
 
@@ -43,14 +68,9 @@ def delete_comment(comment_id):
 
 if __name__ == "__main__":
     # Replace 'YOUR_VIDEO_ID' with the actual video ID and 'YOUR_COMMENT_TEXT' with the comment text you want to find
-    video_id = 'YOUR_VIDEO_ID'
-    comment_text = 'YOUR_COMMENT_TEXT'
+    video_id = '-vIC9kZwvq8'
+    comment_text = 'poop32'
 
     # Find the comment ID
-    comment_id = find_comment(video_id, comment_text)
+    comment_id = filter_comment(video_id)
 
-    if comment_id:
-        # Delete the comment
-        delete_comment(comment_id)
-    else:
-        print("Comment not found.")
