@@ -3,7 +3,7 @@ import joblib
 from class_data import *
 
 cl = Client()
-
+cl.delay_range = [1, 3]
 model = joblib.load("model/logistic_regression_model.joblib")
 
 def is_hatefull(comment):
