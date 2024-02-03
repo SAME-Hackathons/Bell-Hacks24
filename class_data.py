@@ -8,6 +8,38 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RepeatedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+import string
+import nltk
+import pandas as pd
+nltk.download('punkt')
+nltk.download('stopwords')
+
+def remove_punctuation(text):
+  cleaned = ''.join([word for word in text if word not in string.punctuation])
+  return cleaned
+
+def tokenizer(text):
+  #remove uupercase
+  lower_text = text.lower()
+  #Tokenize
+  tokenized_text = nltk.word_tokenize(lower_text)
+  return tokenized_text
+
+
+def remove_stopwords(text):
+  stopwords = nltk.corpus.stopwords.words('english')
+  without_stopwords = [word for word in text if word not in stopwords]
+  return  without_stopwords
+
+def remove_shorttokens(text):
+  without_shorttokens = [word for word in text if len(word)>2]
+  return  without_shorttokens
+
+def stemming(text):
+  stemmer = nltk.PorterStemmer()
+  stemmed_words = [stemmer.stem(word) for word in text]
+  return stemmed_words
+
 class RemovePunctuationTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, text_column):
         self.text_column = text_column
