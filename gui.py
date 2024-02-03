@@ -10,14 +10,16 @@ label = tk.Label(text="Welcome to MentalMessages!", font=ctk.CTkFont(size=30, we
 label.pack()
 subtitle = tk.Label(window, text="Media where health comes first!", font=ctk.CTkFont(size=15, slant = "italic"), fg="white", pady=10)
 subtitle.pack()
-buffer = tk.Label(window, text="", font=ctk.CTkFont(size=8))
-buffer.pack(pady=8)
+buffer = tk.Label(window, text="", font=ctk.CTkFont(size=4))
+buffer.pack(pady=4)
 
 #button = ctk.CTkButton(window, text="Refresh", font=ctk.CTkFont(size=12))
 #button.pack(pady=20)
 
-mediaLabel = tk.Label(text="Select your media and provide your credentials below.", font=ctk.CTkFont(size=14), fg="white")
+mediaLabel = tk.Label(text="Select your media platform and provide your credentials below.", font=ctk.CTkFont(size=14), fg="white")
 mediaLabel.pack()
+buffer = tk.Label(window, text="", font=ctk.CTkFont(size=4))
+buffer.pack(pady=4)
 clicked = StringVar()
 clicked.set( "Social Media" ) 
 mediaTypes= [
