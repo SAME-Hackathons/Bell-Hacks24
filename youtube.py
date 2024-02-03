@@ -60,7 +60,7 @@ def is_hatefull(comment):
 
 def filter_comment(video_id):
     # Search for comments on the video with the specified text
-    print("ran")
+    #print("ran")
     comments_request = youtube_service.commentThreads().list(
         part='id,snippet',
         videoId=video_id,
@@ -70,9 +70,9 @@ def filter_comment(video_id):
 
     # Check each comment for the specified text
     for comment_thread in comments_response['items']:
-        print("went through comments")
+        #print("went through comments")
         comment = comment_thread['snippet']['topLevelComment']['snippet']['textDisplay']
-        print(comment)
+        #print(comment)
         if is_hatefull(comment):
             comment_id = comment_thread['id']
             delete_comment(comment_id)
