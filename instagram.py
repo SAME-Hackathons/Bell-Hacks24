@@ -1,5 +1,6 @@
 from instagrapi import Client
 import joblib
+from class_data import *
 
 cl = Client()
 
