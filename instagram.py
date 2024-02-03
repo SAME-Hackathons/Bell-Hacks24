@@ -1,7 +1,7 @@
 from instagrapi import Client
 from instagrapi.exceptions import LoginRequired
-# import joblib
-# from class_data import *
+import joblib
+from class_data import *
 import logging
 
 logging.basicConfig(encoding='utf-8', level=logging.WARNING)
@@ -10,16 +10,16 @@ logging.info("Starting Instagram bot")
 
 cl = Client()
 cl.delay_range = [1, 3]
-# model = joblib.load("model/logistic_regression_model.joblib")
 
+model = joblib.load("model/better.joblib")
 def is_hatefull(comment):
-    return True
-    # if(model.predict([comment]) == 1):
-    #     return False
-    # else:
-    #     return True
+     df = pd.DataFrame([comment], columns=['text'])
+     if(model.predict(df) == 1):
+          return True
+     else:
+          return False
 
-def login(relogin=False):
+def login():
     global user_id
 
     with open("credentials.op", "r") as file:
@@ -93,8 +93,8 @@ def remove_direct_messages():
         for msg in msgs:
             if is_hatefull(msg.text):
                 print(f"User: {user.username} - Message: {msg.text}")
-                #cl.direct_message_delete(thread.pk, msg.pk)
-                #cl.user_block(user.pk)
+                #cl.direct_message_delete(thread.pk, msg.id)
+                cl.user_block(user.pk)
 
 
 
@@ -103,7 +103,9 @@ if __name__ == "__main__":
     try:
         remove_comments()
         remove_direct_messages()
-    except Exception as e:
-        logging.info(e)
-        login(True)
+    except LoginRequired as e:
+        logging.error(e)
+        cl.relogin()
         cl.dump_settings("igsession.json")
+        remove_comments()
+        remove_direct_messages()
