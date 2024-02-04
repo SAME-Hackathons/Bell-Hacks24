@@ -5,6 +5,7 @@ from tkinter.ttk import Progressbar
 import tkinter as tk
 import customtkinter as ctk
 from instagram import *
+import concurrent.futures
 
 #setup main
 def main():
@@ -13,13 +14,6 @@ def main():
     window = tk.Tk()
     window.title("Healthy Messages")
     window.geometry( "800x600" )
-
-    #Progress bar
-    p = Progressbar(window,orient=HORIZONTAL,length=200,mode="determinate",takefocus=False,maximum=100)
-    p.pack()            
-    for i in range(100):                
-        p.step()            
-        window.update()
 
     #titles
     label = tk.Label(text="Welcome to Healthy Messages!", font=ctk.CTkFont(size=30, weight="bold", underline=True))
@@ -156,21 +150,28 @@ def main():
                 lines[12] = f"True\n"
 
         #remove comments and messages from instagram using external script
-        if clicked.get() == "Instagram":
-            rmcomments = lines[2]
-            rmmessages = lines[4]
-            remove(bool(rmcomments), bool(rmmessages))
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            if clicked.get() == "Instagram":
+                rmcomments = lines[2]
+                rmmessages = lines[4]
+                future1 = executor.submit(remove, bool(rmcomments), bool(rmmessages))
+                #remove(bool(rmcomments), bool(rmmessages))
 
+                p = Progressbar(window,orient=HORIZONTAL,length=15000,mode="determinate",takefocus=False,maximum=500)
+                p.pack()            
+                for i in range(1500):                
+                    p.step()            
+                    window.update()
+                concurrent.futures.wait([future1])
+        
+
+        
+                
         #write changes to file    
         with open("selectedOptionsNew.op", "w") as file:
             file.writelines(lines)
 
-        #final loading bar
-        p = Progressbar(window,orient=HORIZONTAL,length=200,mode="determinate",takefocus=False,maximum=500)
-        p.pack()            
-        for i in range(500):                
-            p.step()            
-            window.update()
+        
         
     #create submit button to accept/update credentials and cleanse options based on media type
     submit_button = ctk.CTkButton(window, text="Submit", font=ctk.CTkFont(size=12), command=submit_credentials)
