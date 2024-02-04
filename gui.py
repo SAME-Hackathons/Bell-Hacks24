@@ -1,39 +1,50 @@
+#imports
 from tkinter import *
 import tkinter as tk
 import customtkinter as ctk
 
+#setup tkinter window
 window = tk.Tk()
 window.title("App Name")
-window.geometry( "800x450" )
+window.geometry( "800x600" )
 
+#titles
 label = tk.Label(text="Welcome to MentalMessages!", font=ctk.CTkFont(size=30, weight="bold", underline=True))
 label.pack()
 subtitle = tk.Label(window, text="Media where health comes first!", font=ctk.CTkFont(size=15, slant = "italic"), pady=10)
 subtitle.pack()
+
+#visual buffer
 buffer = tk.Label(window, text="", font=ctk.CTkFont(size=4))
 buffer.pack(pady=4)
 
-#button = ctk.CTkButton(window, text="Refresh", font=ctk.CTkFont(size=12))
-#button.pack(pady=20)
-
+#select media type
 mediaLabel = tk.Label(text="Select your media platform and provide your credentials below.", font=ctk.CTkFont(size=14))
 mediaLabel.pack()
+
+#visual buffer
 buffer = tk.Label(window, text="", font=ctk.CTkFont(size=4))
 buffer.pack(pady=4)
+
+#list of media types
 clicked = StringVar()
 clicked.set( "Social Media" ) 
 mediaTypes= [
     "Instagram", 
-    "Discord", 
     "Youtube"
 ]
 
+#setup for attributes that can be cleaned of hateful messages, starts empty
 cleanOptions = []
-prompt = tk.Label(window, text="What would you like to cleanse?", font=ctk.CTkFont(size=12), underline = True)
-listbox = tk.Listbox(window, font=ctk.CTkFont(size=10), height = len(cleanOptions), selectmode = "multiple")
+prompt = tk.Label(window, text="What would you like to cleanse?", font=ctk.CTkFont(size=15), underline = True)
+listbox = tk.Listbox(window, font=ctk.CTkFont(size=14), height = len(cleanOptions), selectmode = "multiple")
 
+#function to show options based on media type
 def showOptions():
+    #clear exising options
     listbox.delete(0,END)
+
+    #get options from newly selected
     type = clicked.get()
     cleanOptions = []
     if type == "Instagram": 
@@ -42,21 +53,24 @@ def showOptions():
         cleanOptions = ["Youtube Comments"]
     elif type == "Discord":
         cleanOptions = ["Discord Messages"]
-
+    
+    #pack option selector and label
     prompt.pack()
     for count, option in enumerate(cleanOptions, 1):
         listbox.insert(count, option)
     listbox.pack()
 
+#on change for change media type
 def grabcurrent(event):
     cleanOptions = []
     showOptions()
     pass
 
+#dropdown for media type
 drop = tk.OptionMenu( window , clicked, *mediaTypes, command = grabcurrent ) 
 drop.pack(pady=10) 
 
-
+#visual for username and password entering
 username_label = tk.Label(window, text="Username:", font=ctk.CTkFont(size=12))
 username_label.pack()
 username_entry = tk.Entry(window)
@@ -68,14 +82,18 @@ password_label.pack()
 password_entry = tk.Entry(window, show="*")
 password_entry.pack()
 
+#send user/pass and cleanse preferences to files
 def submit_credentials():
+    #grab selected options dropdown and fillable fields
     text = clicked.get()
     username = username_entry.get()
     password = password_entry.get()
-
+    
+    #open and read credentials file
     with open("credentials.op", "r") as file:
         lines = file.readlines()
-
+    
+    #add and replace corresponding username and password values
     for i, line in enumerate(lines):
         if text == "Instagram" and "Instagram:" in line:
             lines[i + 1] = f"{username}\n"
@@ -86,20 +104,25 @@ def submit_credentials():
         elif text == "Youtube" and "Youtube:" in line:
             lines[i + 1] = f"{username}\n"
             lines[i + 2] = f"{password}\n"
-        
+    
+    #write changes to file
     with open("credentials.op", "w") as file:
         file.writelines(lines)
-
+    
+    #visually remove entered credentials
     username_entry.delete(0, tk.END)
     password_entry.delete(0, tk.END)
-
+   
+    #check cleanse options checked true
     selectedVals = []
     for i in listbox.curselection():
         selectedVals.append(listbox.get(i))
-
+    
+    #open and read selected options file
     with open("selectedOptionsNew.op", "r") as file:
         lines = file.readlines()
 
+    #reset boolean values to false before searching for selected values (only coorresponding to selected media type)
     if text == "Instagram":
         lines[2] = f"False\n"
         lines[4] = f"False\n"
@@ -108,6 +131,7 @@ def submit_credentials():
     if text == "Discord":
         lines[12] = f"False\n"
 
+    #change selected cleanse options to true
     for i in selectedVals:
         if i == "Instagram Comments":
             lines[2] = f"True\n"
@@ -118,17 +142,13 @@ def submit_credentials():
         elif i == "Discord Messages":
             lines[12] = f"True\n"
             
-        
+    #write changes to file    
     with open("selectedOptionsNew.op", "w") as file:
         file.writelines(lines)
-    #showOptions()
 
+#create submit button to accept/update credentials and cleanse options based on media type
 submit_button = ctk.CTkButton(window, text="Submit", font=ctk.CTkFont(size=12), command=submit_credentials)
 submit_button.pack(pady=20)
 
-buffer = tk.Label(window, text="", font=ctk.CTkFont(size=8))
-buffer.pack(pady=4)
-
-
-
+#load tkinter window
 window.mainloop()
