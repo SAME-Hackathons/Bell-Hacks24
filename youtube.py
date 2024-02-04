@@ -19,7 +19,7 @@ from class_data import *
 from hateful import is_hateful
 
 # OAuth2 credentials file (replace 'path/to/credentials.json' with your actual path)
-credentials_path = 'credentials.json'
+credentials_path = 'credentials/credentials.json'
 
 # Scope required for YouTube Data API
 SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
@@ -30,7 +30,7 @@ def authenticate():
     # The file token.json stores the user's access and refresh tokens, and is created automatically when the
     # authorization flow completes for the first time.
     if os.path.exists('token.json'):
-        credentials = Credentials.from_authorized_user_file('token.json')
+        credentials = Credentials.from_authorized_user_file('credentials/token.json')
 
     # If there are no (valid) credentials available, let the user log in.
     if not credentials or not credentials.valid:

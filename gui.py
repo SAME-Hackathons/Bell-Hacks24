@@ -101,7 +101,7 @@ def main():
         password = password_entry.get()
     
         #open and read credentials file
-        with open("credentials.op", "r") as file:
+        with open("credentials/credentials.op", "r") as file:
             lines = file.readlines()
         
         #add and replace corresponding username and password values
@@ -114,7 +114,7 @@ def main():
                 lines[i + 2] = f"{password}\n"
         
         #write changes to file
-        with open("credentials.op", "w") as file:
+        with open("credentials/credentials.op", "w") as file:
             file.writelines(lines)
     
         #visually remove entered credentials
@@ -127,7 +127,7 @@ def main():
             selectedVals.append(listbox.get(i))
         
         #open and read selected options file
-        with open("selectedOptionsNew.op", "r") as file:
+        with open("credentials/selectedOptionsNew.op", "r") as file:
             lines = file.readlines()
 
         #reset boolean values to false before searching for selected values (only coorresponding to selected media type)
@@ -156,6 +156,7 @@ def main():
             if clicked.get() == "Youtube":
                 future1 = executor.submit(youtube.filter_comment, "video_id")
 
+            #final progress bar
             p = Progressbar(window,orient=HORIZONTAL,length=15000,mode="determinate",takefocus=False,maximum=500)
             p.pack()            
             for i in range(1500):                
@@ -163,15 +164,10 @@ def main():
                 window.update()
             concurrent.futures.wait([future1])
         
-        
-
-                
         #write changes to file    
-        with open("selectedOptionsNew.op", "w") as file:
+        with open("credentials/selectedOptionsNew.op", "w") as file:
             file.writelines(lines)
 
-        
-        
     #create submit button to accept/update credentials and cleanse options based on media type
     submit_button = ctk.CTkButton(window, text="Submit", font=ctk.CTkFont(size=12), command=submit_credentials)
     submit_button.pack(pady=20)
