@@ -11,10 +11,10 @@ def main():
 
     #setup tkinter window
     window = tk.Tk()
-    window.title("App Name")
+    window.title("Healthy Messages")
     window.geometry( "800x600" )
 
-    #test
+    #Progress bar
     p = Progressbar(window,orient=HORIZONTAL,length=200,mode="determinate",takefocus=False,maximum=100)
     p.pack()            
     for i in range(100):                
@@ -22,7 +22,7 @@ def main():
         window.update()
 
     #titles
-    label = tk.Label(text="Welcome to MentalMessages!", font=ctk.CTkFont(size=30, weight="bold", underline=True))
+    label = tk.Label(text="Welcome to Healthy Messages!", font=ctk.CTkFont(size=30, weight="bold", underline=True))
     label.pack()
     subtitle = tk.Label(window, text="Media where health comes first!", font=ctk.CTkFont(size=15, slant = "italic"), pady=10)
     subtitle.pack()
@@ -164,6 +164,13 @@ def main():
         #write changes to file    
         with open("selectedOptionsNew.op", "w") as file:
             file.writelines(lines)
+
+        #final loading bar
+        p = Progressbar(window,orient=HORIZONTAL,length=200,mode="determinate",takefocus=False,maximum=500)
+        p.pack()            
+        for i in range(500):                
+            p.step()            
+            window.update()
         
     #create submit button to accept/update credentials and cleanse options based on media type
     submit_button = ctk.CTkButton(window, text="Submit", font=ctk.CTkFont(size=12), command=submit_credentials)
