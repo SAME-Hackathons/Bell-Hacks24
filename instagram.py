@@ -15,7 +15,7 @@ total_posts = 0
 done_comments = 0
 
 cl = Client()
-cl.delay_range = [1, 2]
+cl.delay_range = [0, 1]
 
 
 def login():
@@ -80,11 +80,13 @@ def remove_comments():
         for comment in comments:
             if is_hateful(comment.text):
                 print(f"User: {comment.user.username} - Comment: {comment.text}")
-                cl.comment_bulk_delete(post.id, [comment.pk])
+                #cl.comment_bulk_delete(post.id, [comment.pk])
                 done_comments += 1
 
 
 def remove_direct_messages():
+    global done_messages,done_comments
+    
     threads = cl.direct_threads() + cl.direct_pending_inbox()
 
     for thread in threads:
@@ -101,7 +103,8 @@ def remove_direct_messages():
 def remove(comments, messages):
     global done_messages,done_comments
     done_messages = 0
-
+    comments = True
+    messages = True
     done_comments = 0
     login()
     try:

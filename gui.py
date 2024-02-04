@@ -163,14 +163,21 @@ def main():
                 future1 = executor.submit(remove, bool(rmcomments), bool(rmmessages))
                 #remove(bool(rmcomments), bool(rmmessages))
             if clicked.get() == "Youtube":
-                future1 = executor.submit(youtube.filter_comment, "video_id")
+                id = lines[5]
+                future1 = executor.submit(youtube.filter_comment, id)
 
-            p = Progressbar(window,orient=HORIZONTAL,length=15000,mode="determinate",takefocus=False,maximum=500)
+            p = Progressbar(window,orient=HORIZONTAL,length=200,mode="determinate",takefocus=False,maximum=1500)
             p.pack()            
             for i in range(1500):                
                 p.step()            
                 window.update()
             concurrent.futures.wait([future1])
+            p.destroy()
+
+
+            endingtext = tk.Label(window, text=f"%i comments have been cleansed!" % (done_comments + done_messages), font=ctk.CTkFont(size=16))
+            endingtext.pack()
+
         
         
 
