@@ -19,7 +19,7 @@ from class_data import *
 from hateful import is_hateful
 
 # OAuth2 credentials file (replace 'path/to/credentials.json' with your actual path)
-credentials_path = 'credentials/googlecred.json'
+credentials_path = 'credentials\googlecred.json'
 
 # Scope required for YouTube Data API
 SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
@@ -54,8 +54,10 @@ youtube_service = build('youtube', 'v3', credentials=creds)
 def filter_comment(video_id):
     global count
     count = 0
+    creds = authenticate()
+    youtube_service = build('youtube', 'v3', credentials=creds)
     # Search for comments on the video with the specified text
-    #print("ran")
+    print("ran")
     comments_request = youtube_service.commentThreads().list(
         part='id,snippet',
         videoId=video_id,
@@ -65,6 +67,7 @@ def filter_comment(video_id):
 
     # Check each comment for the specified text
     for comment_thread in comments_response['items']:
+        print("ranthrough")
         #print("went through comments")
         comment = comment_thread['snippet']['topLevelComment']['snippet']['textDisplay']
         #print(comment)
