@@ -8,11 +8,11 @@ from hateful import *
 logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 logging.info("Starting Instagram bot")
 
-total_people = 0
-done_people = 0
+total_messages = 0
+done_messages = 0
 
 total_posts = 0
-done_posts = 0
+done_comments = 0
 
 cl = Client()
 cl.delay_range = [1, 2]
@@ -73,6 +73,7 @@ def login():
     user_id = cl.user_id_from_username(username)
 
 def remove_comments():
+    global done_messages,done_comments
     medias = cl.user_medias(user_id, 20)
     for post in medias:
         comments = cl.media_comments(post.id)
@@ -80,6 +81,8 @@ def remove_comments():
             if is_hateful(comment.text):
                 print(f"User: {comment.user.username} - Comment: {comment.text}")
                 cl.comment_bulk_delete(post.id, [comment.pk])
+                done_comments += 1
+
 
 def remove_direct_messages():
     threads = cl.direct_threads() + cl.direct_pending_inbox()
@@ -90,11 +93,16 @@ def remove_direct_messages():
         for msg in msgs:
             if is_hateful(msg.text):
                 print(f"User: {user.username} - Message: {msg.text}")
+                done_messages += 1
                 #cl.direct_message_delete(thread.pk, msg.id)
                 #cl.user_block(user.pk)
 
 
 def remove(comments, messages):
+    global done_messages,done_comments
+    done_messages = 0
+
+    done_comments = 0
     login()
     try:
         if comments:
