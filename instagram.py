@@ -3,7 +3,7 @@ from instagrapi.exceptions import LoginRequired
 from class_data import *
 import logging
 
-from hateful import is_hateful
+from hateful import *
 
 logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 logging.info("Starting Instagram bot")
@@ -15,7 +15,7 @@ total_posts = 0
 done_posts = 0
 
 cl = Client()
-cl.delay_range = [0.5, 1.5]
+cl.delay_range = [1, 2]
 
 
 def login():
