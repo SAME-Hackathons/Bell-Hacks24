@@ -57,8 +57,12 @@ def main():
         cleanOptions = []
         if type == "Instagram": 
             cleanOptions = ["Instagram Comments", "Instagram Messages"]
+            username_label.config(text="username")
+            password_label.config(text="password")
         elif type == "Youtube":
             cleanOptions = ["Youtube Comments"]
+            username_label.config(text="video-id")
+            password_label.config(text="api-key")
         elif type == "Discord":
             cleanOptions = ["Discord Messages"]
     
@@ -70,6 +74,7 @@ def main():
 
     #on change for change media type
     def grabcurrent(event):
+        
         cleanOptions = []
         showOptions()
         pass
