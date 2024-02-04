@@ -1,23 +1,22 @@
 from instagrapi import Client
 from instagrapi.exceptions import LoginRequired
-import joblib
 from class_data import *
 import logging
+
+from hateful import is_hateful
 
 logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 logging.info("Starting Instagram bot")
 
+total_people = 0
+done_people = 0
+
+total_posts = 0
+done_posts = 0
 
 cl = Client()
-cl.delay_range = [1, 3]
+cl.delay_range = [0.5, 1.5]
 
-model = joblib.load("model/better.joblib")
-def is_hatefull(comment):
-     df = pd.DataFrame([comment], columns=['text'])
-     if(model.predict(df) == 1):
-          return True
-     else:
-          return False
 
 def login():
     global user_id
@@ -27,8 +26,6 @@ def login():
 
     username = lines[1].strip()
     password = lines[2].strip()
-
-
 
     try:
         session = cl.load_settings("igsession.json")
@@ -80,9 +77,9 @@ def remove_comments():
     for post in medias:
         comments = cl.media_comments(post.id)
         for comment in comments:
-            if is_hatefull(comment.text):
+            if is_hateful(comment.text):
                 print(f"User: {comment.user.username} - Comment: {comment.text}")
-                #cl.comment_bulk_delete(post.id, [comment.pk])
+                cl.comment_bulk_delete(post.id, [comment.pk])
 
 def remove_direct_messages():
     threads = cl.direct_threads() + cl.direct_pending_inbox()
@@ -91,21 +88,28 @@ def remove_direct_messages():
         msgs = cl.direct_messages(thread.pk)
         user = thread.users[0]
         for msg in msgs:
-            if is_hatefull(msg.text):
+            if is_hateful(msg.text):
                 print(f"User: {user.username} - Message: {msg.text}")
                 #cl.direct_message_delete(thread.pk, msg.id)
-                cl.user_block(user.pk)
+                #cl.user_block(user.pk)
 
 
-
-if __name__ == "__main__":
+def remove(comments, messages):
     login()
     try:
-        remove_comments()
-        remove_direct_messages()
+        if comments:
+            remove_comments()
+        if messages:
+            remove_direct_messages()
     except LoginRequired as e:
         logging.error(e)
         cl.relogin()
         cl.dump_settings("igsession.json")
-        remove_comments()
-        remove_direct_messages()
+        if comments:
+            remove_comments()
+        if messages:
+            remove_direct_messages()
+
+
+if __name__ == "__main__":
+    remove(True, True)
