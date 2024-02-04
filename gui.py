@@ -57,14 +57,12 @@ def main():
         cleanOptions = []
         if type == "Instagram": 
             cleanOptions = ["Instagram Comments", "Instagram Messages"]
-            username_label.config(text="username")
-            password_label.config(text="password")
+            username_label.config(text="Username")
+            password_label.config(text="Password")
         elif type == "Youtube":
             cleanOptions = ["Youtube Comments"]
-            username_label.config(text="video-id")
-            password_label.config(text="api-key")
-        elif type == "Discord":
-            cleanOptions = ["Discord Messages"]
+            username_label.config(text="Video-id")
+            password_label.config(text="Api-key")
     
         #pack option selector and label
         prompt.pack()
@@ -111,9 +109,6 @@ def main():
             if text == "Instagram" and "Instagram:" in line:
                 lines[i + 1] = f"{username}\n"
                 lines[i + 2] = f"{password}\n"
-            elif text == "Discord" and "Discord:" in line:
-                lines[i + 1] = f"{username}\n"
-                lines[i + 2] = f"{password}\n"
             elif text == "Youtube" and "Youtube:" in line:
                 lines[i + 1] = f"{username}\n"
                 lines[i + 2] = f"{password}\n"
@@ -141,8 +136,6 @@ def main():
             lines[4] = f"False\n"
         if text == "Youtube":
             lines[8] = f"False\n"
-        if text == "Discord":
-            lines[12] = f"False\n"
 
         #change selected cleanse options to true
         for i in selectedVals:
@@ -152,8 +145,6 @@ def main():
                 lines[4] = f"True\n"
             elif i == "Youtube Comments":
                 lines[8] = f"True\n"
-            elif i == "Discord Messages":
-                lines[12] = f"True\n"
 
         #remove comments and messages from instagram using external script
         with concurrent.futures.ThreadPoolExecutor() as executor:
