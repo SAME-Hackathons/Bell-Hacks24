@@ -2,14 +2,14 @@ import pandas as pd
 import joblib
 from class_data import *
 
-model = joblib.load("model/better.joblib")
+model = joblib.load("model/combinedmodel.joblib")
 
 def is_hateful(comment):
      df = pd.DataFrame([comment], columns=['text'])
      y_probabilities = model.predict_proba(df)[:, 1]
 
     # Set a custom threshold (e.g., 0.3)
-     custom_threshold = 0.4
+     custom_threshold = 0.3
 
     # Apply the custom threshold to make predictions
      y_custom_predictions = (y_probabilities > custom_threshold).astype(int)

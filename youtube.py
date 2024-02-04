@@ -19,11 +19,11 @@ from class_data import *
 from hateful import is_hateful
 
 # OAuth2 credentials file (replace 'path/to/credentials.json' with your actual path)
-credentials_path = 'credentials/credentials.json'
+credentials_path = 'credentials/googlecred.json'
 
 # Scope required for YouTube Data API
 SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
-
+yt_count = 0
 def authenticate():
     credentials = None
 
@@ -52,6 +52,8 @@ creds = authenticate()
 youtube_service = build('youtube', 'v3', credentials=creds)
 
 def filter_comment(video_id):
+    global count
+    count = 0
     # Search for comments on the video with the specified text
     #print("ran")
     comments_request = youtube_service.commentThreads().list(
@@ -70,6 +72,7 @@ def filter_comment(video_id):
             comment_id = comment_thread['id']
             delete_comment(comment_id)
             print("Deleted Comment: " + comment)
+            count += 1
         else:
             print("Not Deleted: " + comment)
 
@@ -84,9 +87,8 @@ def delete_comment(comment_id):
     print("Comment deleted successfully.")
 
 if __name__ == "__main__":
-    # Replace 'YOUR_VIDEO_ID' with the actual video ID and 'YOUR_COMMENT_TEXT' with the comment text you want to find
     video_id = '-vIC9kZwvq8'
-    comment_text = 'poop32'
+    comment_text = 't'
 
     # Find the comment ID
     filter_comment(video_id)
