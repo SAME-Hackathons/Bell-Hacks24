@@ -57,14 +57,12 @@ def main():
         cleanOptions = []
         if type == "Instagram": 
             cleanOptions = ["Instagram Comments", "Instagram Messages"]
-            username_label.config(text="username")
-            password_label.config(text="password")
+            username_label.config(text="Username")
+            password_label.config(text="Password")
         elif type == "Youtube":
             cleanOptions = ["Youtube Comments"]
-            username_label.config(text="video-id")
-            password_label.config(text="api-key")
-        elif type == "Discord":
-            cleanOptions = ["Discord Messages"]
+            username_label.config(text="Video-id")
+            password_label.config(text="Api-key")
     
         #pack option selector and label
         prompt.pack()
@@ -103,7 +101,7 @@ def main():
         password = password_entry.get()
     
         #open and read credentials file
-        with open("credentials.op", "r") as file:
+        with open("credentials/credentials.op", "r") as file:
             lines = file.readlines()
         
         #add and replace corresponding username and password values
@@ -111,15 +109,12 @@ def main():
             if text == "Instagram" and "Instagram:" in line:
                 lines[i + 1] = f"{username}\n"
                 lines[i + 2] = f"{password}\n"
-            elif text == "Discord" and "Discord:" in line:
-                lines[i + 1] = f"{username}\n"
-                lines[i + 2] = f"{password}\n"
             elif text == "Youtube" and "Youtube:" in line:
                 lines[i + 1] = f"{username}\n"
                 lines[i + 2] = f"{password}\n"
         
         #write changes to file
-        with open("credentials.op", "w") as file:
+        with open("credentials/credentials.op", "w") as file:
             file.writelines(lines)
     
         #visually remove entered credentials
@@ -132,7 +127,7 @@ def main():
             selectedVals.append(listbox.get(i))
         
         #open and read selected options file
-        with open("selectedOptionsNew.op", "r") as file:
+        with open("credentials/selectedOptionsNew.op", "r") as file:
             lines = file.readlines()
 
         #reset boolean values to false before searching for selected values (only coorresponding to selected media type)
@@ -141,8 +136,6 @@ def main():
             lines[4] = f"False\n"
         if text == "Youtube":
             lines[8] = f"False\n"
-        if text == "Discord":
-            lines[12] = f"False\n"
 
         #change selected cleanse options to true
         for i in selectedVals:
@@ -152,8 +145,6 @@ def main():
                 lines[4] = f"True\n"
             elif i == "Youtube Comments":
                 lines[8] = f"True\n"
-            elif i == "Discord Messages":
-                lines[12] = f"True\n"
 
         #remove comments and messages from instagram using external script
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -172,22 +163,11 @@ def main():
                 p.step()            
                 window.update()
             concurrent.futures.wait([future1])
-            p.destroy()
-
-
-            endingtext = tk.Label(window, text=f"%i comments have been cleansed!" % (done_comments + done_messages), font=ctk.CTkFont(size=16))
-            endingtext.pack()
-
         
-        
-
-                
         #write changes to file    
-        with open("selectedOptionsNew.op", "w") as file:
+        with open("credentials/selectedOptionsNew.op", "w") as file:
             file.writelines(lines)
 
-        
-        
     #create submit button to accept/update credentials and cleanse options based on media type
     submit_button = ctk.CTkButton(window, text="Submit", font=ctk.CTkFont(size=12), command=submit_credentials)
     submit_button.pack(pady=20)

@@ -21,14 +21,14 @@ cl.delay_range = [0, 1]
 def login():
     global user_id
 
-    with open("credentials.op", "r") as file:
+    with open("credentials/credentials.op", "r") as file:
         lines = file.readlines()
 
     username = lines[1].strip()
     password = lines[2].strip()
 
     try:
-        session = cl.load_settings("igsession.json")
+        session = cl.load_settings("credentials/igsession.json")
     except FileNotFoundError:
         session = None
 
@@ -115,7 +115,7 @@ def remove(comments, messages):
     except LoginRequired as e:
         logging.error(e)
         cl.relogin()
-        cl.dump_settings("igsession.json")
+        cl.dump_settings("credentials/igsession.json")
         if comments:
             remove_comments()
         if messages:
