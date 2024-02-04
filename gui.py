@@ -5,6 +5,7 @@ from tkinter.ttk import Progressbar
 import tkinter as tk
 import customtkinter as ctk
 from instagram import *
+import youtube
 import concurrent.futures
 
 #setup main
@@ -156,16 +157,18 @@ def main():
                 rmmessages = lines[4]
                 future1 = executor.submit(remove, bool(rmcomments), bool(rmmessages))
                 #remove(bool(rmcomments), bool(rmmessages))
+            if clicked.get() == "Youtube":
+                future1 = executor.submit(youtube.filter_comment, "video_id")
 
-                p = Progressbar(window,orient=HORIZONTAL,length=15000,mode="determinate",takefocus=False,maximum=500)
-                p.pack()            
-                for i in range(1500):                
-                    p.step()            
-                    window.update()
-                concurrent.futures.wait([future1])
+            p = Progressbar(window,orient=HORIZONTAL,length=15000,mode="determinate",takefocus=False,maximum=500)
+            p.pack()            
+            for i in range(1500):                
+                p.step()            
+                window.update()
+            concurrent.futures.wait([future1])
+        
         
 
-        
                 
         #write changes to file    
         with open("selectedOptionsNew.op", "w") as file:
