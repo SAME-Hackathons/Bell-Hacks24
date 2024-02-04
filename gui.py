@@ -154,10 +154,10 @@ def main():
                 future1 = executor.submit(remove, bool(rmcomments), bool(rmmessages))
                 #remove(bool(rmcomments), bool(rmmessages))
             if clicked.get() == "Youtube":
-                future1 = executor.submit(youtube.filter_comment, "video_id")
+                id = lines[5]
+                future1 = executor.submit(youtube.filter_comment, id)
 
-            #final progress bar
-            p = Progressbar(window,orient=HORIZONTAL,length=15000,mode="determinate",takefocus=False,maximum=500)
+            p = Progressbar(window,orient=HORIZONTAL,length=200,mode="determinate",takefocus=False,maximum=1500)
             p.pack()            
             for i in range(1500):                
                 p.step()            
